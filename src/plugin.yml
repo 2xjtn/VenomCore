@@ -1,0 +1,5 @@
+name: VenomCore
+main: org.jacob.spigot.plugins.VenomCore.VenomCore
+version: 1.0
+commands:
+  punish:

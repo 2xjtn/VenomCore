@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_venomcore" default="compile.module.venomcore">
+  <dirname property="module.venomcore.basedir" file="${ant.file.module_venomcore}"/>
+  
+  <property name="module.jdk.home.venomcore" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.venomcore" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.venomcore" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.venomcore" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="venomcore.output.dir" value="${module.venomcore.basedir}/out/production/VenomCore"/>
+  <property name="venomcore.testoutput.dir" value="${module.venomcore.basedir}/out/test/VenomCore"/>
+  
+  <path id="venomcore.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="venomcore.module.production.classpath">
+    <path refid="${module.jdk.classpath.venomcore}"/>
+    <pathelement location="${basedir}/../Vault.jar"/>
+    <pathelement location="${basedir}/../LiteBansAPI.jar"/>
+    <pathelement location="${basedir}/../spigot-1.12.2.jar"/>
+  </path>
+  
+  <path id="venomcore.runtime.production.module.classpath">
+    <pathelement location="${venomcore.output.dir}"/>
+    <pathelement location="${basedir}/../Vault.jar"/>
+    <pathelement location="${basedir}/../LiteBansAPI.jar"/>
+    <pathelement location="${basedir}/../spigot-1.12.2.jar"/>
+  </path>
+  
+  <path id="venomcore.module.classpath">
+    <path refid="${module.jdk.classpath.venomcore}"/>
+    <pathelement location="${venomcore.output.dir}"/>
+    <pathelement location="${basedir}/../Vault.jar"/>
+    <pathelement location="${basedir}/../LiteBansAPI.jar"/>
+    <pathelement location="${basedir}/../spigot-1.12.2.jar"/>
+  </path>
+  
+  <path id="venomcore.runtime.module.classpath">
+    <pathelement location="${venomcore.testoutput.dir}"/>
+    <pathelement location="${venomcore.output.dir}"/>
+    <pathelement location="${basedir}/../Vault.jar"/>
+    <pathelement location="${basedir}/../LiteBansAPI.jar"/>
+    <pathelement location="${basedir}/../spigot-1.12.2.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.venomcore">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.venomcore">
+    <patternset refid="excluded.from.module.venomcore"/>
+  </patternset>
+  
+  <path id="venomcore.module.sourcepath">
+    <dirset dir="${module.venomcore.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.venomcore" depends="compile.module.venomcore.production,compile.module.venomcore.tests" description="Compile module VenomCore"/>
+  
+  <target name="compile.module.venomcore.production" depends="register.custom.compilers" description="Compile module VenomCore; production classes">
+    <mkdir dir="${venomcore.output.dir}"/>
+    <javac2 destdir="${venomcore.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.venomcore}/javac">
+      <compilerarg line="${compiler.args.venomcore}"/>
+      <bootclasspath refid="venomcore.module.bootclasspath"/>
+      <classpath refid="venomcore.module.production.classpath"/>
+      <src refid="venomcore.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.venomcore"/>
+    </javac2>
+    
+    <copy todir="${venomcore.output.dir}">
+      <fileset dir="${module.venomcore.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.venomcore.tests" depends="register.custom.compilers,compile.module.venomcore.production" description="compile module VenomCore; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.venomcore" description="cleanup module">
+    <delete dir="${venomcore.output.dir}"/>
+    <delete dir="${venomcore.testoutput.dir}"/>
+  </target>
+</project>
